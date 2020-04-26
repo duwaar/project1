@@ -1,3 +1,3 @@
-Code for project 1 in CS50W.
+# Project 1
 
-A book review website and API.
+Web Programming with Python and JavaScript
