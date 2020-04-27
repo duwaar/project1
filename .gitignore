@@ -1,3 +1,7 @@
 # Files for git to ignore
 
+
 env/
+flask_session/
+__pycache__/
+src3/
