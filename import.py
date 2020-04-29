@@ -12,7 +12,7 @@ def get_csv_rows(filename):
 
 
 def main():
-    engine = create_engine('postgres://qhutchfxohvldy:06fb88a98fcb777f47b0cf6c3dd38bf8c6ccc0cd22cb540da4e607bd0b431bd8@ec2-54-197-34-207.compute-1.amazonaws.com:5432/d567u6iinhno1a')
+    engine = create_engine(getenv('DATABASE_URL'))
     db = scoped_session(sessionmaker(bind=engine))
 
     for i, row in enumerate(get_csv_rows('books.csv')):
