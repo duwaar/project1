@@ -1,0 +1,42 @@
+$break_width: 720px;
+$content_bg: #cccccc;
+$content_highlight: #ffffffe8;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+%content {
+    background-color: $content_bg;
+    padding: 20px;
+    margin: 20px;
+
+    table {
+        border-collapse: collapse;
+    }
+
+    th {
+        background-color: gray;
+    }
+
+    th, td {
+        padding: 5px;
+    }
+
+    li {
+        margin-left: 20px;
+    }
+}
+
+body {
+    background-color: #222222;
+}
+
+.navbar {
+    background-color: #2070c0;
+}
+
+.row {
+    @extend %content;
+}
