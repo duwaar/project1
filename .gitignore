@@ -1,8 +1,8 @@
-# Files for git to ignore
+# Files and folders for git to ignore
 
 
-env/*
-flask_session/*
+**env/
+**flask_session/
 **/__pycache__/
-src3/*
-.sass-cache/*
+**src3/
+**.sass-cache/

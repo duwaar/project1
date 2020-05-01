@@ -6,19 +6,12 @@
   background-color: #cccccc;
   padding: 20px;
   margin: 20px; }
-  .row table {
-    border-collapse: collapse; }
-  .row th {
-    background-color: gray; }
-  .row th, .row td {
-    padding: 5px; }
-  .row li {
-    margin-left: 20px; }
-
-body {
-  background-color: #222222; }
 
 .navbar {
-  background-color: #2070c0; }
+  background-color: #3080d0; }
+  .navbar .nav-item {
+    color: #d0d0d0; }
+    .navbar .nav-item .active {
+      color: #f0f0f0; }
 
 /*# sourceMappingURL=styles.css.map */
