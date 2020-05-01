@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% set active_page = 'home' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                Welcome to the BookReader homepage!
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form action="{{ url_for('home_page') }}" method="GET">
+                    <input name="query" type="text" placeholder="Search by title, author, isbn, or year">
+                    <button>Go</button>
+                </form>
+            </div>
+        </div>
+        {% if query: %}
+            <div class="row">
+                <div class="col">
+                    Search results for "{{ query }}":
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
