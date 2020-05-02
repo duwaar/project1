@@ -13,6 +13,14 @@ $content_highlight: #ffffffe8;
     margin: 20px;
 }
 
+.content {
+    @extend %content;
+}
+
+.row {
+    @extend %content;
+}
+
 .navbar {
     background-color: #3080d0;
     
@@ -23,8 +31,4 @@ $content_highlight: #ffffffe8;
             color: #f0f0f0;
         }
     }
-}
-
-.row {
-    @extend %content;
 }

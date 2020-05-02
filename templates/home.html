@@ -7,11 +7,13 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                Welcome to the BookReader homepage!
+                Welcome to BookReader!
+                <br/>
+                Find a book to see what other people have to say about it.
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-5">
                 <form action="{{ url_for('home_page') }}" method="GET">
                     <select name="search_by">
                         <option value="title" selected>Title</option>
@@ -23,18 +25,24 @@
                     <button>Go</button>
                 </form>
             </div>
+            {% if query: %}
+                <div class="col">
+                    Found {{ results|length }} results for "{{ query }}"
+                </div>
+            {% endif %}
         </div>
         {% if query: %}
-            <div class="row">
-                <div class="col">
-                    {{ results|length }} results for "{{ query }}":
-                </div>
-            </div>
             {% if results: %}
                 {% for result in results: %}
                     <div class="row">
+                        <div class="col-5">
+                            <i>{{ result[2] }}</i> by {{ result[3] }}
+                        </div>
                         <div class="col">
-                            {{ result }}
+                            Published: {{ result[4] }}
+                        </div>
+                        <div class="col">
+                            ISBN: {{ result[1] }}
                         </div>
                     </div>
                 {% endfor %}
