@@ -40,3 +40,16 @@ def home_page():
     
     return render_template("home.html", query=query, results=results)
 
+@app.route("/login", methods=["GET", "POST"])
+def login_page():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+    else:
+        username = ""
+
+    return render_template("login.html", success=False, username=username)
+
+@app.route("/register")
+def new_account():
+    return "Coming soon!"
