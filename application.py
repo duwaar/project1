@@ -50,6 +50,32 @@ def login_page():
 
     return render_template("login.html", success=False, username=username)
 
+def check_reg_form(form_data):
+    success = False
+    if form_data["email"] == "":
+        message = "You must enter an email address."
+    elif len(form_data["username"]) < 5:
+        message = "Username must be at least five characters long."
+    elif db.execute(f"SELECT id FROM users WHERE username = '{form_data['username']}';").fetchall():
+        message = f"An account with the username \"{form_data['username']}\" already exists."
+    elif len(form_data["password"]) < 6:
+        message = "Password must be at least six characters long."
+    elif form_data["password"] != form_data["re_pword"]:
+        message = "You re-typed your password incorrectly."
+    else:
+        success = True
+        message = f"Yay! You have been sucessfully registered as \"{form_data['username']}\" on BookReader!"
+    
+    return success, message
+
 @app.route("/register", methods=["GET", "POST"])
 def register_page():
-    return render_template("register.html", message="Please fill out the form.")
+    if request.method == "POST":
+        reg_valid, message = check_reg_form(request.form)
+        if reg_valid:
+            #add user to database.
+            pass
+    else:
+        message = "Please fill out the form."
+
+    return render_template("register.html", message=message)
