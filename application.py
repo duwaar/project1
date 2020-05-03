@@ -50,6 +50,6 @@ def login_page():
 
     return render_template("login.html", success=False, username=username)
 
-@app.route("/register")
-def new_account():
-    return "Coming soon!"
+@app.route("/register", methods=["GET", "POST"])
+def register_page():
+    return render_template("register.html", message="Please fill out the form.")
