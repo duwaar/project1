@@ -57,6 +57,16 @@ def login_page():
 
     return render_template("login.html", message=message)
 
+@app.route("/logout", methods=["GET", "POST"])
+def logout_page():
+    if request.method == "POST":
+        session["username"] = None
+        message = "You have been logged out."
+    else:
+        message = "Click the button to log out."
+
+    return render_template("logout.html", message=message)
+
 def check_reg_form(form_data):
     success = False
     if form_data.get("email") == "":

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Logout
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <form class="d-flex flex-column" action="{{ url_for('logout_page') }}" method="POST">
+                    <span class="p-0">Click the button to log out.</span>
+                    <span class="p-1"></span>
+                    <button class="p-0">Log out</button>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-4 d-flex flex-column">
+                <div class="p-1">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
