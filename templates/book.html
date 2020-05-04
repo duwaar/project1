@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Book Info
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div class="d-flex flex-column">
+                <span class="p-0">Title: {{ book_data['title'] }}</span>
+                <span class="p-1"></span>
+                <span class="p-0">Author: {{ book_data['author'] }}</span>
+                <span class="p-1"></span>
+                <span class="p-0">Year of publication: {{ book_data['year'] }}</span>
+                <span class="p-1"></span>
+                <span class="p-0">ISBN: {{ book_data['isbn'] }}</span>
+            </div>
+            {% if session.get('username') %}
+            <form class="d-flex flex-column" action="{{ url_for('submit_read') }}" method="GET">
+                <span class="p-1"></span>
+                <button class="p-0">I read this book!</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
