@@ -54,27 +54,36 @@ def check_reg_form(form_data):
     success = False
     if form_data["email"] == "":
         message = "You must enter an email address."
-    elif len(form_data["username"]) < 5:
-        message = "Username must be at least five characters long."
+    elif len(form_data["username"]) < 5\
+            or len(form_data["username"]) > 20:
+        message = "Username must be between 5 and 20 characters long."
     elif db.execute(f"SELECT id FROM users WHERE username = '{form_data['username']}';").fetchall():
         message = f"An account with the username \"{form_data['username']}\" already exists."
-    elif len(form_data["password"]) < 6:
-        message = "Password must be at least six characters long."
+    elif len(form_data["password"]) < 6\
+            or len(form_data["password"]) > 50:
+        message = "Password must be between 6 and 50 characters long."
+    elif form_data["password"] == form_data["username"]:
+        message = "Please do not make your password the same as your username."
     elif form_data["password"] != form_data["re_pword"]:
         message = "You re-typed your password incorrectly."
     else:
         success = True
-        message = f"Yay! You have been sucessfully registered as \"{form_data['username']}\" on BookReader!"
+        message = "Form filled correctly."
     
     return success, message
 
 @app.route("/register", methods=["GET", "POST"])
 def register_page():
     if request.method == "POST":
-        reg_valid, message = check_reg_form(request.form)
+        reg_valid, err_message = check_reg_form(request.form)
         if reg_valid:
-            #add user to database.
-            pass
+            db.execute(f"INSERT INTO users (username, pw_hash, email) VALUES (:username, :pw_hash, :email);",\
+                    {"username":request.form["username"], "pw_hash":request.form["password"], "email":request.form["email"]})
+            db.commit()
+            #user_id = db.execute(f"SELECT id FROM users WHERE username = '{request.form['username']}';").fetchall()[0][0]
+            message = f"Yay! You have registered as {request.form['username']}. Welcome to Bookreader!"
+        else:
+            message = err_message
     else:
         message = "Please fill out the form."
 
