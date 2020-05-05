@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            {% if session.get('username') %}
+            <form class="d-flex flex-column" action="{{ url_for('submit_read_page') }}" method="POST">
+                <span class="p-1">Enter your review here:</span>
+                <span class="p-1"></span>
+                <select class="p-0" name="stars">
+                    {% for i in range(5) %}
+                    <option value="{{ i + 1 }}">{{ "*" * (i + 1) }}</option>
+                    {% endfor %}
+                </select>
+                <span class="p-1"></span>
+                <textarea class="p-0" name="review" rows="10" cols="20" placeholder="Type your review here!"></textarea>
+                <span class="p-1"></span>
+                <button class="p-0">Submit</button>
+            </form>
+            {% else %}
+            <div class="d-flex flex-column">
+                <span class="p-0">You must be logged-in to submit a read.</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

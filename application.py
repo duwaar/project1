@@ -118,6 +118,10 @@ def book_page(book_isbn):
 
     return render_template("book.html", book_data=book_data)
 
-@app.route("/submit_read", methods=["GET"])
-def submit_read():
-    return "To do."
+@app.route("/submit_read", methods=["GET", "POST"])
+def submit_read_page():
+    if request.method == "POST":
+        #Add the read to the database!
+        pass
+
+    return render_template("submit_read.html")
