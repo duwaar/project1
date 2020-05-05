@@ -18,7 +18,7 @@ Book Info
                 <span class="p-0">ISBN: {{ book_data['isbn'] }}</span>
             </div>
             {% if session.get('username') %}
-            <form class="d-flex flex-column" action="{{ url_for('submit_read_page') }}" method="GET">
+            <form class="d-flex flex-column" action="{{ url_for('submit_read_page', book_isbn=book_data['isbn']) }}" method="GET">
                 <span class="p-1"></span>
                 <button class="p-0">I read this book!</button>
             </form>
