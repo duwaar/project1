@@ -1,34 +1,35 @@
 {% extends "layout.html" %}
+{% set active_page = "login"}
 
 {% block title %}
-    Login
+Login
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-4">
-                <form class="d-flex flex-column" action="{{ url_for('login_page') }}" method="POST">
-                    <span class="p-1">Enter your login information here:</span>
-                    <span class="p-1"></span>
-                    <input class="p-0" name="username" type="text" placeholder="Username">
-                    <span class="p-1"></span>
-                    <input class="p-0" name="password" type="password" placeholder="Password">
-                    <span class="p-1"></span>
-                    <button class="p-0">Login</button>
-                </form>
-                <form class="d-flex flex-column" action="{{ url_for('register_page') }}" method="GET">
-                    <span class="p-2"></span>
-                    <button class="p-0">Create new account</button>
-                </form>
-            </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <form class="d-flex flex-column" action="{{ url_for('login_page') }}" method="POST">
+                <span class="p-1">Enter your login information here:</span>
+                <span class="p-1"></span>
+                <input class="p-0" name="username" type="text" placeholder="Username">
+                <span class="p-1"></span>
+                <input class="p-0" name="password" type="password" placeholder="Password">
+                <span class="p-1"></span>
+                <button class="p-0">Login</button>
+            </form>
+            <form class="d-flex flex-column" action="{{ url_for('register_page') }}" method="GET">
+                <span class="p-2"></span>
+                <button class="p-0">Create new account</button>
+            </form>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-4 d-flex flex-column">
-                <div class="p-1">
-                    {{ message }}
-                </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4 d-flex flex-column">
+            <div class="p-1">
+                {{ message }}
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
