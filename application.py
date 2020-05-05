@@ -117,6 +117,11 @@ def book_page(book_isbn):
         book_data['author'] = db_result[2]
         book_data['year']   = db_result[3]
         book_data['isbn']   = db_result[4]
+        book_data['reads'] = db.execute(f"""
+                    SELECT users.username, reads.date, reads.rating, reads.review
+                    FROM reads INNER JOIN users ON (users.id = reads.user_id)
+                    WHERE book_id = '{book_data['id']}';"""
+                ).fetchall()
 
     return render_template("book.html", book_data=book_data)
 

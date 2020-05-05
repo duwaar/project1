@@ -29,6 +29,24 @@ Book Info
             </form>
             {% endif %}
         </div>
+        <div class="col-4">
+            <div class="d-flex flex-column">
+                <span class="p-0"><b>Reviews:</b></span>
+                <span class="p-2"></span>
+                {% if book_data['reads']|length > 0 %}
+                    {% for read in book_data['reads'] %}
+                    <span class="p-0">user: {{ read[0] }}</span>
+                    <span class="p-0">date: {{ read[1] }}</span>
+                    <span class="p-0">stars: {{ "*" * read[2] }}</span>
+                    <span class="p-0">comments:</span>
+                    <span class="p-0">{{ read[3] }}</span>
+                    <span class="p-2"></span>
+                    {% endfor %}
+                {% else %}
+                <span class='p-0'>There are no reviews yet for this book.</span>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
