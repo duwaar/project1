@@ -107,34 +107,37 @@ def register_page():
 
     return render_template("register.html", message=message)
 
-@app.route("/book/<string:book_isbn>", methods=["GET", "POST"])
-def book_page(book_isbn):
-    db_result = db.execute(f"SELECT id, title, author, year, isbn FROM books WHERE isbn = '{book_isbn}';").fetchone()
+def get_book_data(isbn=""):
+    db_result = db.execute(f"SELECT id, title, author, year FROM books WHERE isbn = '{isbn}';").fetchone()
     book_data = {'id':'', 'title':'', 'author':'', 'year':'', 'isbn':''}
     if db_result:
         book_data['id']     = db_result[0]
         book_data['title']  = db_result[1]
         book_data['author'] = db_result[2]
         book_data['year']   = db_result[3]
-        book_data['isbn']   = db_result[4]
+        book_data['isbn']   = isbn
         book_data['reads'] = db.execute(f"""
                     SELECT users.username, reads.date, reads.rating, reads.review
                     FROM reads INNER JOIN users ON (users.id = reads.user_id)
                     WHERE book_id = '{book_data['id']}';"""
                 ).fetchall()
+    return book_data
 
-    return render_template("book.html", book_data=book_data)
+@app.route("/book/<string:book_isbn>", methods=["GET", "POST"])
+def book_page(book_isbn):
+    return render_template("book.html", book_data=get_book_data(isbn=book_isbn))
 
 @app.route("/submit_read/<string:book_isbn>", methods=["GET", "POST"])
 def submit_read_page(book_isbn):
+    book_data = get_book_data(isbn=book_isbn)
+
     if request.method == "POST" and session['username']:
         user_id = db.execute(f"SELECT id FROM users WHERE username = '{session['username']}';").fetchone()[0]
-        book_id = db.execute(f"SELECT id FROM books WHERE isbn = '{book_isbn}';").fetchone()[0]
-
         db.execute("INSERT INTO reads (user_id, book_id, rating, review, date) VALUES (:user_id, :book_id, :rating, :review, :date);",\
-                {"user_id":user_id, "book_id":book_id, "rating":request.form.get("stars"), "review":request.form.get("review"), "date":time.asctime()})
+                {"user_id":user_id, "book_id":book_data['id'], "rating":request.form.get("stars"), "review":request.form.get("review"), "date":time.asctime()})
         db.commit()
 
         return redirect(url_for('book_page', book_isbn=book_isbn))
 
-    return render_template("submit_read.html", book_isbn=book_isbn)
+    return render_template("submit_read.html", book_data=book_data)
+
