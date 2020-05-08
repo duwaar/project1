@@ -10,7 +10,7 @@ Submit a Read
     <div class="row justify-content-center">
         <div class="col-4">
             {% if session.get('username') %}
-            <form class="d-flex flex-column" action="{{ url_for('submit_read_page', book_isbn=book_isbn) }}" method="POST">
+            <form class="d-flex flex-column" action="{{ url_for('submit_read_page', book_isbn=book_data['isbn']) }}" method="POST">
                 <span class="p-1">What did you think about <i>{{ book_data["title"] }}</i> ({{ book_data["year"] }}) by {{ book_data["author"] }}?</span>
                 <span class="p-1"></span>
                 <select class="p-0" name="stars">

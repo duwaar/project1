@@ -2,8 +2,7 @@ from flask import Flask, session, request, render_template, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-import os
-import time
+import os, time, statistics
 
 app = Flask(__name__)
 
@@ -107,25 +106,54 @@ def register_page():
 
     return render_template("register.html", message=message)
 
+def get_median_stars(isbn):
+    ratings = db.execute(f"""
+            SELECT rating
+            FROM (
+                SELECT *
+                FROM reads JOIN books ON (reads.book_id = books.id)
+                WHERE isbn = '{isbn}'
+                )
+            AS book;
+            """).fetchall()
+    
+    values = []
+    for rating in ratings:
+        values.append(rating[0])
+    
+    if len(values) > 0:
+        return statistics.median(values)
+    else:
+        return 0
+
 def get_book_data(isbn=""):
+    book_data = {
+            "id": 0, "title": "",
+            "author": "",
+            "year": 0,
+            "isbn": "",
+            "reads": [],
+            "bookreads_stars": 0,
+            "goodreads_stars": 0,
+    }
     db_result = db.execute(f"SELECT id, title, author, year FROM books WHERE isbn = '{isbn}';").fetchone()
-    book_data = {'id':'', 'title':'', 'author':'', 'year':'', 'isbn':''}
     if db_result:
-        book_data['id']     = db_result[0]
-        book_data['title']  = db_result[1]
-        book_data['author'] = db_result[2]
-        book_data['year']   = db_result[3]
-        book_data['isbn']   = isbn
+        book_data['id'], book_data['title'], book_data['author'], book_data['year'] = db_result
+        book_data['isbn'] = isbn
         book_data['reads'] = db.execute(f"""
                     SELECT users.username, reads.date, reads.rating, reads.review
                     FROM reads INNER JOIN users ON (users.id = reads.user_id)
                     WHERE book_id = '{book_data['id']}';"""
                 ).fetchall()
+
+    book_data["bookreads_stars"] = get_median_stars(isbn)
+
     return book_data
 
 @app.route("/book/<string:book_isbn>", methods=["GET", "POST"])
 def book_page(book_isbn):
-    return render_template("book.html", book_data=get_book_data(isbn=book_isbn))
+    book_data = get_book_data(isbn=book_isbn)
+    return render_template("book.html", book_data=book_data)
 
 @app.route("/submit_read/<string:book_isbn>", methods=["GET", "POST"])
 def submit_read_page(book_isbn):
