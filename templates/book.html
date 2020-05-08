@@ -9,7 +9,7 @@ Book Info
     <div class="row justify-content-center">
         <div class="col-4">
             <div class="d-flex flex-column">
-                <span class="p-0">Title: {{ book_data['title'] }}</span>
+                <span class="p-0">Title: <i>{{ book_data['title'] }}</i></span>
                 <span class="p-1"></span>
                 <span class="p-0">Author: {{ book_data['author'] }}</span>
                 <span class="p-1"></span>
@@ -18,10 +18,15 @@ Book Info
                 <span class="p-0">ISBN: {{ book_data['isbn'] }}</span>
                 <span class="p-1"></span>
                 {% if book_data["bookreads_stars"] == 0 %}
-                <span class="p-0">No reviews have been left for this book yet.</span>
+                <span class="p-0">No reads have been left by BookReaders yet.</span>
                 {% else %}
-                <span class="p-0">Average user rating from bookreader: {{ "*" * book_data['bookreads_stars'] }}</span>
+                <span class="p-0">Average user rating from BookReader: {{ "*" * book_data['bookreads_stars'] }}</span>
                 {% endif %}
+                <span class="p-1"></span>
+                <span class="p-0">Average rating from GoodReads (based on {{ book_data['goodreads_ratings'] }} ratings): {{ book_data['goodreads_avg'] }} stars</span>
+                <span class="p-1"></span>
+                <span class="p-0">Read <a href="{{ book_data['goodreads_url'] }}">{{ book_data['goodreads_reviews'] }} reviews</a> on GoodReads.</span>
+                <span class="p-1"></span>
             </div>
             {% if session.get('username') %}
             <form class="d-flex flex-column" action="{{ url_for('submit_read_page', book_isbn=book_data['isbn']) }}" method="GET">
@@ -49,7 +54,7 @@ Book Info
                     <span class="p-2"></span>
                     {% endfor %}
                 {% else %}
-                <span class='p-0'>There are no reviews yet for this book.</span>
+                <span class='p-0'>There are no BookReads reviews yet for this book.</span>
                 {% endif %}
             </div>
         </div>
