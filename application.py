@@ -167,7 +167,19 @@ def get_book_data(isbn=""):
 @app.route("/book/<string:book_isbn>", methods=["GET", "POST"])
 def book_page(book_isbn):
     book_data = get_book_data(isbn=book_isbn)
-    return render_template("book.html", book_data=book_data)
+
+    reads = db.execute("""
+            SELECT users.username, books.isbn
+            FROM reads
+                JOIN users ON (reads.user_id = users.id)
+                JOIN books ON (reads.book_id = books.id)
+            WHERE users.username = :username
+            ;""",
+            {"username":session["username"]}
+            ).fetchone()
+    reviewed = True if len(reads) > 0 else False
+
+    return render_template("book.html", book_data=book_data, reviewed=reviewed)
 
 @app.route("/submit_read/<string:book_isbn>", methods=["GET", "POST"])
 def submit_read_page(book_isbn):

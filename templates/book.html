@@ -28,15 +28,20 @@ Book Info
                 <span class="p-0">Read <a href="{{ book_data['goodreads_url'] }}">{{ book_data['goodreads_reviews'] }} reviews</a> on GoodReads.</span>
                 <span class="p-1"></span>
             </div>
-            {% if session.get('username') %}
-            <form class="d-flex flex-column" action="{{ url_for('submit_read_page', book_isbn=book_data['isbn']) }}" method="GET">
-                <span class="p-1"></span>
-                <button class="p-0">I read this book!</button>
-            </form>
-            {% else %}
+            {% if not session.get('username') %}
             <form class="d-flex flex-column" action="{{ url_for('login_page') }}" method="GET">
                 <span class="p-1"></span>
                 <button class="p-0">Login to leave a read.</button>
+            </form>
+            {% elif reviewed %}
+            <div class="d-flex flex-column">
+                <span class="p-1"></span>
+                <span class="p-0">You have already reviewed this book.</span>
+            </div>
+            {% else %}
+            <form class="d-flex flex-column" action="{{ url_for('submit_read_page', book_isbn=book_data['isbn']) }}" method="GET">
+                <span class="p-1"></span>
+                <button class="p-0">I read this book!</button>
             </form>
             {% endif %}
         </div>
