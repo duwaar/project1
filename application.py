@@ -1,4 +1,4 @@
-from flask import Flask, session, request, render_template, redirect, url_for
+from flask import Flask, session, request, render_template, redirect, url_for, abort
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -130,8 +130,32 @@ def get_json(data):
     return data
 
 def get_book_data(isbn=""):
-    book_data = {
-            "id": 0, "title": "",
+    db_result = db.execute(f"SELECT id, title, author, year FROM books WHERE isbn = '{isbn}';").fetchone()
+    if db_result:
+        book_data['id'] = db_result[0]
+        book_data['title'] = db_result[1]
+        book_data['author'] = db_result[2]
+        book_data['year'] = db_result[3]
+        book_data['isbn'] = isbn
+        book_data['reads'] = db.execute(f"""
+                    SELECT users.username, reads.date, reads.rating, reads.review
+                    FROM reads INNER JOIN users ON (users.id = reads.user_id)
+                    WHERE book_id = '{book_data['id']}';"""
+                ).fetchall()
+        book_data["bookreads_stars"] = get_median_stars(isbn)
+
+        gr_data = requests.get(f"https://www.goodreads.com/book/review_counts.json", params={
+                "key":"UJ44O7XabOxMCodyJCSvMw",
+                "isbns":[isbn],
+                }).json()["books"][0]
+        book_data["goodreads_reviews"] = gr_data["reviews_count"]
+        book_data["goodreads_ratings"] = gr_data["ratings_count"]
+        book_data["goodreads_avg"] = gr_data["average_rating"]
+        book_data["goodreads_url"] = f"https://www.goodreads.com/book/isbn/{isbn}"
+    else:
+        book_data = {
+            "id": 0,
+            "title": "",
             "author": "",
             "year": 0,
             "isbn": "",
@@ -140,27 +164,7 @@ def get_book_data(isbn=""):
             "goodreads_reviews": 0,
             "goodreads_ratings": 0,
             "goodreads_avg": 0,
-    }
-    db_result = db.execute(f"SELECT id, title, author, year FROM books WHERE isbn = '{isbn}';").fetchone()
-    if db_result:
-        book_data['id'], book_data['title'], book_data['author'], book_data['year'] = db_result
-        book_data['reads'] = db.execute(f"""
-                    SELECT users.username, reads.date, reads.rating, reads.review
-                    FROM reads INNER JOIN users ON (users.id = reads.user_id)
-                    WHERE book_id = '{book_data['id']}';"""
-                ).fetchall()
-
-    book_data['isbn'] = isbn
-    book_data["bookreads_stars"] = get_median_stars(isbn)
-
-    gr_data = requests.get(f"https://www.goodreads.com/book/review_counts.json", params={
-            "key":"UJ44O7XabOxMCodyJCSvMw",
-            "isbns":[isbn],
-            }).json()["books"][0]
-    book_data["goodreads_reviews"] = gr_data["reviews_count"]
-    book_data["goodreads_ratings"] = gr_data["ratings_count"]
-    book_data["goodreads_avg"] = gr_data["average_rating"]
-    book_data["goodreads_url"] = f"https://www.goodreads.com/book/isbn/{isbn}"
+            }
 
     return book_data
 
@@ -195,6 +199,22 @@ def submit_read_page(book_isbn):
 
     return render_template("submit_read.html", book_data=book_data)
 
-@app.route("/error/<string:message>", methods=["GET"])
-def error_page(message):
-    return render_template("error.html", message=message)
+@app.errorhandler(404)
+def error_page(error):
+    return render_template("error.html", message=error), 404
+
+@app.route("/api/<string:isbn>", methods=["GET"])
+def api(isbn):
+    book_data = get_book_data(isbn)
+    if book_data["id"] == 0:
+        return abort(404)
+    else:
+        json = {
+            "title":book_data["title"],
+            "author":book_data["author"],
+            "year":book_data["year"],
+            "isbn":book_data["isbn"],
+            "review_count":len(book_data["reads"]),
+            "average_score":book_data["bookreads_stars"],
+            }
+        return json
