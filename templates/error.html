@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% set active_page = "error" %}
+
+{% block title %}
+Error
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div class="d-flex flex-column">
+                <span class="p-0">An error occurred.</span>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4 d-flex flex-column">
+            <div class="p-1">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

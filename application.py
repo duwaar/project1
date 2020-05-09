@@ -195,3 +195,6 @@ def submit_read_page(book_isbn):
 
     return render_template("submit_read.html", book_data=book_data)
 
+@app.route("/error/<string:message>", methods=["GET"])
+def error_page(message):
+    return render_template("error.html", message=message)
