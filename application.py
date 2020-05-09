@@ -130,6 +130,7 @@ def get_json(data):
     return data
 
 def get_book_data(isbn=""):
+    book_data = {}
     db_result = db.execute(f"SELECT id, title, author, year FROM books WHERE isbn = '{isbn}';").fetchone()
     if db_result:
         book_data['id'] = db_result[0]
