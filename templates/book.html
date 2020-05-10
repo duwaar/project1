@@ -21,10 +21,10 @@ Book Info
                 {% if book_data["bookreads_stars"] == 0 %}
                 <span class="p-0">No reads have been left by BookReaders yet.</span>
                 {% else %}
-                <span class="p-0">Average user rating from BookReader: {{ "*" * book_data['bookreads_stars'] }}</span>
+                <span class="p-0">Average user rating from BookReader: {{ book_data['bookreads_stars'] }}/5</span>
                 {% endif %}
                 <span class="p-1"></span>
-                <span class="p-0">Average rating from GoodReads (based on {{ book_data['goodreads_ratings'] }} ratings): {{ book_data['goodreads_avg'] }} stars</span>
+                <span class="p-0">Average rating from GoodReads (based on {{ book_data['goodreads_ratings'] }} ratings): {{ book_data['goodreads_avg'] }}/5 stars</span>
                 <span class="p-1"></span>
                 <span class="p-0">Read <a href="{{ book_data['goodreads_url'] }}">{{ book_data['goodreads_reviews'] }} reviews</a> on GoodReads.</span>
                 <span class="p-1"></span>
@@ -54,7 +54,7 @@ Book Info
                     {% for read in book_data['reads'] %}
                     <span class="p-0">user: {{ read[0] }}</span>
                     <span class="p-0">date: {{ read[1] }}</span>
-                    <span class="p-0">stars: {{ "*" * read[2] }}</span>
+                    <span class="p-0">stars: {{ read[2] }}/5</span>
                     <span class="p-0">comments:</span>
                     <span class="p-0">{{ read[3] }}</span>
                     <span class="p-2"></span>

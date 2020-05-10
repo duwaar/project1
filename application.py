@@ -38,8 +38,10 @@ def home_page():
     return render_template("home.html", query=query, results=results)
 
 def valid_login(username, password):
-    account = db.execute(f"SELECT username, pw_hash FROM users WHERE username = '{username}'").fetchone()
-    if password == account[1]:
+    accounts = db.execute(f"SELECT username, pw_hash FROM users WHERE username = '{username}'").fetchall()
+    if len(accounts) == 0:
+        return False
+    elif password == accounts[0][1]:
         return True
     else:
         return False
@@ -173,16 +175,19 @@ def get_book_data(isbn=""):
 def book_page(book_isbn):
     book_data = get_book_data(isbn=book_isbn)
 
-    reads = db.execute("""
-            SELECT users.username, books.isbn
-            FROM reads
-                JOIN users ON (reads.user_id = users.id)
-                JOIN books ON (reads.book_id = books.id)
-            WHERE users.username = :username
-            ;""",
-            {"username":session["username"]}
-            ).fetchone()
-    reviewed = True if len(reads) > 0 else False
+    if "username" in session:
+        reads = db.execute("""
+                SELECT users.username, books.isbn
+                FROM reads
+                    JOIN users ON (reads.user_id = users.id)
+                    JOIN books ON (reads.book_id = books.id)
+                WHERE users.username = :username
+                ;""",
+                {"username":session["username"]}
+                ).fetchall()
+        reviewed = True if len(reads) > 0 else False
+    else:
+        reviewed = False
 
     return render_template("book.html", book_data=book_data, reviewed=reviewed)
 
@@ -190,7 +195,7 @@ def book_page(book_isbn):
 def submit_read_page(book_isbn):
     book_data = get_book_data(isbn=book_isbn)
 
-    if request.method == "POST" and session['username']:
+    if request.method == "POST" and "username" in session:
         user_id = db.execute(f"SELECT id FROM users WHERE username = '{session['username']}';").fetchone()[0]
         db.execute("INSERT INTO reads (user_id, book_id, rating, review, date) VALUES (:user_id, :book_id, :rating, :review, :date);",\
                 {"user_id":user_id, "book_id":book_data['id'], "rating":request.form.get("stars"), "review":request.form.get("review"), "date":time.asctime()})
